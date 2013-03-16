@@ -1,5 +1,5 @@
 #!/usr/bin/python
-import socket, sys, os
+import socket, sys, os, threading
 
 class IonicDB:
     def __init__(self):
@@ -29,7 +29,7 @@ class IonicDB:
             self.system = data[1]
             self.query = data[2]
             try:
-                self.cmds[self.cmd]()
+                threading.Thread(taret=self.cmds[self.cmd])
             except Exception, error:
                 print error
                 pass
@@ -69,4 +69,7 @@ class IonicDB:
                         outs.write(x+"\n")
 
 if __name__ == "__main__":  
+    if len(sys.argv) < 2:
+        print 'Usage: ionic-server <port>'
+        exit()
     IonicDB().main()
