@@ -34,7 +34,8 @@ class IonicDB:
                 pass
     def select(self):
         if not os.path.exists(self.system+".ion"):
-            self.obj.send("System "+self.system+" does not exist!")
+            with open(self.system+".ion", 'w') as file:
+                pass
             self.obj.close()
         else:
             with open(self.system+".ion", 'rb') as file:
