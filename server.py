@@ -29,7 +29,7 @@ class IonicDB:
             self.system = data[1]
             self.query = data[2]
             try:
-                threading.Thread(taret=self.cmds[self.cmd])
+                threading.Thread(target=self.cmds[self.cmd])
             except Exception, error:
                 print error
                 pass
