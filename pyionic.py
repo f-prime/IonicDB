@@ -35,3 +35,9 @@ class pyionic:
         query = """("{0}","{1}","{2}")""".format("remove", system, str(query))
         s.send(query)
         s.close()
+    def update(self, system, query):
+        s = socket.socket()
+        s.connect((self.ip, self.port))
+        query = """("{0}","{1}","{2}")""".format("update", system, str(query))
+        s.send(query)
+        s.close()

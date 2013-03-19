@@ -10,24 +10,26 @@ class IonicDBClient:
                 "select":self.select,
                 "insert":self.insert,
                 "remove":self.remove,
-
+                "update":self.update,
                 }
     def main_loop(self):
         while True:
-            cmd = raw_input("IonicDB> ").split()
-            if cmd[0] == "exit":
-                break
             try:
-                self.cmd = cmd[0]
-                self.system = cmd[1]
-                self.query = cmd[1:]
-                self.query.remove(self.system)
-                self.query = ' '.join(self.query)
-                self.cmds[self.cmd]()
-            except Exception, error:
-                print error
-                print "Invalid Syntax"
-
+                cmd = raw_input("IonicDB> ").split()
+                if cmd[0] == "exit":
+                    break
+                try:
+                    self.cmd = cmd[0]
+                    self.system = cmd[1]
+                    self.query = cmd[1:]
+                    self.query.remove(self.system)
+                    self.query = ' '.join(self.query)
+                    self.cmds[self.cmd]()
+                except Exception, error:
+                    print error
+                    print "Invalid Syntax"
+            except:
+                continue
     def select(self):
         sock = socket.socket()
         sock.connect((self.ip, self.port))
@@ -51,7 +53,15 @@ class IonicDBClient:
         query = """("{0}", "{1}", "{2}")""".format(self.cmd, self.system, self.query)
         sock.send(query)
         sock.close()
-
+    def update(self):
+        sock = socket.socket()
+        sock.connect((self.ip, self.port))
+        query = """("{0}", "{1}", "{2}")""".format(self.cmd, self.system, self.query)
+        sock.send(query)
+        sock.close()
 if __name__ == "__main__":
+    if len(sys.argv) < 3:
+        print "Usage: ionic <host> <port>"
+        exit()
     IonicDBClient().main_loop()
 

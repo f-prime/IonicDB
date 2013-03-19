@@ -9,7 +9,8 @@ class IonicDB:
                 "select":self.select,
                 "insert":self.insert,
                 "remove":self.remove,
-            
+                "update":self.update,
+
                 }
     def main(self):
         s = socket.socket()
@@ -33,10 +34,9 @@ class IonicDB:
             except Exception, error:
                 print error
                 pass
+
     def select(self):
         if not os.path.exists(self.system+".ion"):
-            with open(self.system+".ion", 'w') as file:
-                pass
             self.obj.close()
         else:
             with open(self.system+".ion", 'rb') as file:
@@ -47,10 +47,13 @@ class IonicDB:
     def insert(self):
         if not os.path.exists(self.system+".ion"):
             with open(self.system+".ion", 'w') as file:
-                pass
-        with open(self.system+".ion", 'ab') as file:
-            file.write(self.query+"\n")
-        self.obj.close()
+                file.write(self.query+"\n")
+            self.obj.close()
+        else:
+            with open(self.system+".ion", 'ab') as file:
+                file.write(self.query+"\n")
+            self.obj.close()
+    
     def remove(self):
         if not os.path.exists(self.system+".ion"):
             pass
@@ -67,7 +70,31 @@ class IonicDB:
                 with open(self.system+".ion", 'wb') as outs:
                     for x in out:
                         outs.write(x+"\n")
+        self.obj.close()
 
+    def update(self):
+        if not os.path.exists(self.system+".ion"):
+            pass
+        else:
+            with open(self.system+".ion", 'rb') as file:
+                stuff = file.read().split("\n")
+                out = []
+                out2 = []
+                query = str(self.query).strip("{").strip("}").split(",")
+                for x in stuff:
+                    if x == '':
+                        continue
+                    else:
+                        out.append(x)
+                for x in out:
+                    g = x.replace("{", '').replace("}", '')
+                    if query[0] in g:
+                        out2.append(x.replace(query[0], query[1]))
+                    else:
+                        out2.append(x)
+                with open(self.system+".ion", 'wb') as file:
+                    file.writelines(out2)
+        self.obj.close()
 if __name__ == "__main__":  
     if len(sys.argv) < 2:
         print 'Usage: ionic-server <port>'
